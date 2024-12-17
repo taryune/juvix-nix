@@ -1,24 +1,30 @@
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  stdenv,
+  fetchurl,
+  autoPatchelfHook,
+  glibc,
+  gcc-unwrapped,
+  zlib,
 }:
 
-pkgs.stdenv.mkDerivation rec {
+stdenv.mkDerivation rec {
   pname = "juvix";
   version = "0.6.8";
 
-  src = pkgs.fetchurl {
+  src = fetchurl {
     url = "https://github.com/anoma/juvix/releases/download/v${version}/juvix-linux-x86_64.tar.gz";
     sha256 = "LEZdB+9/+Xnf/W+1zkF014WZZmfADcU38O5Yz4v8k2w=";
   };
 
   nativeBuildInputs = [
-    pkgs.autoPatchelfHook
+    autoPatchelfHook
   ];
 
   buildInputs = [
-    pkgs.glibc
-    pkgs.gcc-unwrapped
-    pkgs.zlib
+    glibc
+    gcc-unwrapped
+    zlib
   ];
 
   dontStrip = true;
@@ -43,7 +49,7 @@ pkgs.stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "Juvix - a high-level programming language for writing efficient formal proofs and programs";
     homepage = "https://github.com/anoma/juvix";
     license = licenses.gpl3Only;

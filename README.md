@@ -2,56 +2,69 @@
 
 This repository contains the Nix package definition for [Juvix](https://github.com/anoma/juvix), a dependently-typed programming language for writing efficient formal proofs and programs.
 
-## Usage
+## Installation
 
-### Using with `nix-shell`
+### Using Flakes (recommended)
 
-```bash
-nix-shell
-```
+Add to your `flake.nix`:
 
-### Installing with NixOS
-
-Add to your `configuration.nix`:
 ```nix
 {
-  nixpkgs.overlays = [
-    (self: super: {
-      juvix = self.callPackage (builtins.fetchGit {
-        url = "https://github.com/taryune/juvix-nix.git";
-        ref = "main";
-      }) {};
-    })
-  ];
-}
-```
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    juvix-nix.url = "github:taryune/juvix-nix";
+  };
 
-### Installing with home-manager
+  outputs = { self, nixpkgs, juvix-nix, ... }: {
+    # For NixOS system configuration
+    nixosConfigurations.your-hostname = nixpkgs.lib.nixosSystem {
+      modules = [
+        {
+          nixpkgs.overlays = [
+            juvix-nix.overlays.default
+          ];
+        }
+      ];
+    };
 
-Add to your home-manager configuration:
-```nix
-{
-  nixpkgs.overlays = [
-    (self: super: {
-      juvix = self.callPackage (builtins.fetchGit {
-        url = "https://github.com/taryune/juvix-nix.git";
-        ref = "main";
-      }) {};
-    })
-  ];
-
-  home.packages = [ pkgs.juvix ];
+    # Or for home-manager
+    homeConfigurations.your-username = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = [
+        {
+          nixpkgs.overlays = [
+            juvix-nix.overlays.default
+          ];
+          home.packages = [ pkgs.juvix ];
+        }
+      ];
+    };
+  };
 }
 ```
 
 ## Development
 
-To build the package:
+### With Flakes
+
+Build the package:
+```bash
+nix build
+```
+
+Enter development shell:
+```bash
+nix develop
+```
+
+### Without Flakes
+
+Build the package:
 ```bash
 nix-build
 ```
 
-To enter development shell:
+Enter development shell:
 ```bash
 nix-shell
 ```
