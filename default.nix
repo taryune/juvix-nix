@@ -9,10 +9,10 @@
 }:
 stdenv.mkDerivation rec {
   pname = "juvix";
-  version = "0.6.8";
+  version = "0.6.9";
   src = fetchurl {
     url = "https://github.com/anoma/juvix/releases/download/v${version}/juvix-linux-x86_64.tar.gz";
-    sha256 = "sha256-LEZdB+9/+Xnf/W+1zkF014WZZmfADcU38O5Yz4v8k2w=";
+    sha256 = "sha256-GudcMZXlF0nnliZ09cEHc1IRfjmpo+z6TynWr+6mMv0=";
   };
   nativeBuildInputs = [
     autoPatchelfHook
